@@ -195,27 +195,33 @@ public class Interface extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void axis1_negativeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axis1_negativeActionPerformed
-        // TODO add your handling code here:
+        kin.axis1_slide(false);
+        RobotFrame.repaint();
     }//GEN-LAST:event_axis1_negativeActionPerformed
 
     private void axis1_positiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axis1_positiveActionPerformed
-        // TODO add your handling code here:
+        kin.axis1_slide(true);
+        RobotFrame.repaint();
     }//GEN-LAST:event_axis1_positiveActionPerformed
 
     private void axis2_negativeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axis2_negativeActionPerformed
-        // TODO add your handling code here:
+        kin.axis2_rotate(false);
+        RobotFrame.repaint();
     }//GEN-LAST:event_axis2_negativeActionPerformed
 
     private void axis2_positiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axis2_positiveActionPerformed
-        // TODO add your handling code here:
+        kin.axis2_rotate(true);
+        RobotFrame.repaint();
     }//GEN-LAST:event_axis2_positiveActionPerformed
 
     private void axis3_positiveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axis3_positiveActionPerformed
-        // TODO add your handling code here:
+        kin.axis3_rotate(true);
+        RobotFrame.repaint();
     }//GEN-LAST:event_axis3_positiveActionPerformed
 
     private void axis3_negativeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axis3_negativeActionPerformed
-        // TODO add your handling code here:
+        kin.axis3_rotate(false);
+        RobotFrame.repaint();
     }//GEN-LAST:event_axis3_negativeActionPerformed
 
     private void paint_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paint_buttonActionPerformed
@@ -287,6 +293,7 @@ public class Interface extends javax.swing.JFrame {
             g2.setPaint(Color.red);
             g2.setStroke(new BasicStroke(0f));
             for(int i = 0; i < paintdots.size()-2; i+=2){
+                System.out.println(paintdots.size());
                 g2.fill(new Ellipse2D.Double(paintdots.elementAt(i), paintdots.elementAt(i+1), 10, 10));
             }
         }
