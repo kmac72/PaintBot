@@ -6,16 +6,26 @@
 
 package paintbot;
 
+import java.awt.*;
+import java.awt.geom.*;
+import java.util.Vector;
+import javax.swing.*;
+
 /**
  *
  * @author Brian
  */
 public class Interface extends javax.swing.JFrame {
-
+    
+    private Kinematics kin;
+    private Vector<Double> paintdots;
+    
     /**
      * Creates new form Interface
      */
     public Interface() {
+        this.paintdots = new Vector();
+        this.kin = new Kinematics();
         initComponents();
     }
 
@@ -42,6 +52,7 @@ public class Interface extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        RobotFrame = new RobotWorkspace();
         RobotFrame.setBackground(new java.awt.Color(255, 255, 255));
         RobotFrame.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -152,9 +163,10 @@ public class Interface extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(RobotFrame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -175,8 +187,7 @@ public class Interface extends javax.swing.JFrame {
                             .addComponent(axis3_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(54, 54, 54)
                         .addComponent(paint_button, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 308, Short.MAX_VALUE))
-                    .addComponent(RobotFrame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 297, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -208,7 +219,9 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_axis3_negativeActionPerformed
 
     private void paint_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paint_buttonActionPerformed
-        // TODO add your handling code here:
+        paintdots.add(kin.a4_x - 5);
+        paintdots.add(kin.a4_y - 5);
+        RobotFrame.repaint();
     }//GEN-LAST:event_paint_buttonActionPerformed
 
     /**
@@ -244,6 +257,40 @@ public class Interface extends javax.swing.JFrame {
                 new Interface().setVisible(true);
             }
         });
+    }
+    
+    //Class to draw robot arm and paint dots
+    class RobotWorkspace extends JPanel{
+        
+        @Override
+        public void paintComponent(Graphics g){
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D)g;
+            
+            //Draw robot arm and slide
+            double xpoints[] = {kin.a1_x, kin.a2_x, kin.a3_x, kin.a4_x};
+            double ypoints[] = {kin.a1_y, kin.a2_y, kin.a3_y, kin.a4_y};
+
+            GeneralPath robotarm = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xpoints.length);
+            robotarm.moveTo(xpoints[0], ypoints[0]);
+            for (int i = 1; i < xpoints.length; i++) {
+                robotarm.lineTo(xpoints[i], ypoints[i]);
+            }
+            
+            g2.setPaint(Color.gray);
+            g2.fill(new Rectangle2D.Double(kin.a1_x, kin.a1_y, 300, 15));
+            g2.setPaint(Color.black);
+            g2.setStroke(new BasicStroke(5.0f));
+            g2.draw(robotarm);
+                    
+            //Draw paint dots
+            g2.setPaint(Color.red);
+            g2.setStroke(new BasicStroke(0f));
+            for(int i = 0; i < paintdots.size()-2; i+=2){
+                g2.fill(new Ellipse2D.Double(paintdots.elementAt(i), paintdots.elementAt(i+1), 10, 10));
+            }
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
