@@ -83,6 +83,14 @@ public class Kinematics {
         //Y has inversed values due to coordinate system of the frame
         a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
         a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;
+        
+        a4_y = -75 * (Math.cos(a2_th * (Math.PI/180)) * Math.cos(a3_th * (Math.PI/180)) 
+                - Math.sin(a2_th * (Math.PI/180)) * Math.sin(a3_th * (Math.PI/180)))
+                - 100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
+        
+        a4_x = 75 * (-Math.sin(a2_th * (Math.PI/180)) * Math.cos(a3_th * (Math.PI/180)) 
+                - Math.cos(a2_th * (Math.PI/180)) * Math.sin(a3_th * (Math.PI/180)))
+                - 100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;
     }
     
     /**
@@ -90,7 +98,7 @@ public class Kinematics {
      * @param positive if axis 3 should rotate in the positive direction
      */
     public void axis3_rotate(boolean positive){
-
+        
     }
     
 }
