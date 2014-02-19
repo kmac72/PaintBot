@@ -284,7 +284,7 @@ public class Interface extends javax.swing.JFrame {
             }
             
             g2.setPaint(Color.gray);
-            g2.fill(new Rectangle2D.Double(kin.a1_x, kin.a1_y, 300, 15));
+            g2.fill(new Rectangle2D.Double(kin.base_x, kin.base_y, 300, 15));
             g2.setPaint(Color.black);
             g2.setStroke(new BasicStroke(5.0f));
             g2.draw(robotarm);
