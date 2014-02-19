@@ -27,6 +27,7 @@ public class Kinematics {
     public double a4_y;
     
     public double a2_th;
+    public double a3_th;
     public double d1;
     
     /**
@@ -42,6 +43,7 @@ public class Kinematics {
         a4_x = a3_x;
         a4_y = a3_y + 75;
         a2_th = -90;
+        a3_th = -90;
         d1 = 0;
     }
     
@@ -51,19 +53,20 @@ public class Kinematics {
      */
     public void axis1_slide(boolean positive){
         
+        int d1_change;
+        
         if(positive == true) {
             d1 = d1 + 1;
-            a1_x = a1_x + 1;
-            a2_x = a2_x + 1;
-            a3_x = a3_x + 1;
-            a4_x = a4_x + 1;
+            d1_change = 1;
         } else {
             d1 = d1 - 1;
-            a1_x = a1_x - 1;
-            a2_x = a2_x - 1;
-            a3_x = a3_x - 1;
-            a4_x = a4_x - 1;          
-        }    
+            d1_change = -1;
+        }
+        
+        a1_x = a1_x + d1_change;
+        a2_x = a2_x + d1_change;
+        a3_x = a3_x + d1_change;
+        a4_x = a4_x + d1_change;  
     }
     
     /**
