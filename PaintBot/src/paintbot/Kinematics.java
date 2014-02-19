@@ -58,7 +58,7 @@ public class Kinematics {
             a3_x = a3_x + 1;
             a4_x = a4_x + 1;
         } else {
-            d1 = d1 + 1;
+            d1 = d1 - 1;
             a1_x = a1_x - 1;
             a2_x = a2_x - 1;
             a3_x = a3_x - 1;
@@ -72,12 +72,14 @@ public class Kinematics {
      */
     public void axis2_rotate(boolean positive){
         
-        if(positive == true) {
-            a2_th = a2_th + 1;
-            //Y has inversed values due to coordinate system of the frame
-            a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) /*+ Math.sin(a2_th * (Math.PI/180))*/ - 150 + base_y;
-            a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) /*- Math.cos(a2_th * (Math.PI/180))*/ + d1 + base_x;
-        }
+        if(positive == true)
+            a2_th = a2_th + 1;  
+        else
+            a2_th = a2_th - 1;
+
+        //Y has inversed values due to coordinate system of the frame
+        a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
+        a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;
     }
     
     /**
