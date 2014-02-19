@@ -6,6 +6,8 @@
 
 package paintbot;
 
+import java.lang.Math;
+
 /**
  *
  * @author Brian
@@ -24,6 +26,9 @@ public class Kinematics {
     public double a4_x;
     public double a4_y;
     
+    public double a2_th;
+    public double d1;
+    
     /**
      * Set all axis coordinates to default positions
      */
@@ -36,6 +41,8 @@ public class Kinematics {
         a3_y = a2_y;
         a4_x = a3_x;
         a4_y = a3_y + 75;
+        a2_th = -90;
+        d1 = 0;
     }
     
     /**
@@ -43,7 +50,20 @@ public class Kinematics {
      * @param positive if axis 1 should slide in the positive direction
      */
     public void axis1_slide(boolean positive){
-
+        
+        if(positive == true) {
+            d1 = d1 + 1;
+            a1_x = a1_x + 1;
+            a2_x = a2_x + 1;
+            a3_x = a3_x + 1;
+            a4_x = a4_x + 1;
+        } else {
+            d1 = d1 + 1;
+            a1_x = a1_x - 1;
+            a2_x = a2_x - 1;
+            a3_x = a3_x - 1;
+            a4_x = a4_x - 1;          
+        }    
     }
     
     /**
@@ -52,6 +72,12 @@ public class Kinematics {
      */
     public void axis2_rotate(boolean positive){
         
+        if(positive == true) {
+            a2_th = a2_th + 1;
+            //Y has inversed values due to coordinate system of the frame
+            a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) /*+ Math.sin(a2_th * (Math.PI/180))*/ - 150 + base_y;
+            a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) /*- Math.cos(a2_th * (Math.PI/180))*/ + d1 + base_x;
+        }
     }
     
     /**
@@ -59,7 +85,7 @@ public class Kinematics {
      * @param positive if axis 3 should rotate in the positive direction
      */
     public void axis3_rotate(boolean positive){
-        
+
     }
     
 }
