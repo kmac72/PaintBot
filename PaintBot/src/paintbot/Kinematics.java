@@ -55,12 +55,16 @@ public class Kinematics {
         
         int d1_change;
         
-        if(positive == true) {
+        if(positive == true && d1 < 300) {
             d1 = d1 + 1;
             d1_change = 1;
-        } else {
+        } else if (positive == false && d1 > 0) {
             d1 = d1 - 1;
             d1_change = -1;
+        }
+        else
+        {
+            d1_change = 0;
         }
         
         a1_x = a1_x + d1_change;
@@ -99,6 +103,18 @@ public class Kinematics {
      */
     public void axis3_rotate(boolean positive){
         
+        if(positive == true)
+            a3_th = a3_th + 1;  
+        else
+            a3_th = a3_th - 1;        
+        
+        a4_y = -75 * (Math.cos(a2_th * (Math.PI/180)) * Math.cos(a3_th * (Math.PI/180)) 
+                - Math.sin(a2_th * (Math.PI/180)) * Math.sin(a3_th * (Math.PI/180)))
+                - 100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
+        
+        a4_x = 75 * (-Math.sin(a2_th * (Math.PI/180)) * Math.cos(a3_th * (Math.PI/180)) 
+                - Math.cos(a2_th * (Math.PI/180)) * Math.sin(a3_th * (Math.PI/180)))
+                - 100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;
     }
     
 }
