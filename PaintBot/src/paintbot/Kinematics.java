@@ -15,7 +15,7 @@ import java.lang.Math;
 public class Kinematics {
     
     public final int base_x = 228;
-    public final int base_y = 400;
+    public final int base_y = 500;
     
     public double a1_x;
     public double a1_y;
