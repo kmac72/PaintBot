@@ -6,18 +6,27 @@
 
 package paintbot;
 
+import javax.swing.JApplet;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author Brian
  */
-public class PaintBot {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Interface frame = new Interface();
-        frame.setVisible(true);
+public class PaintBot extends JApplet {
+    
+    public void init(){
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    Interface frame = new Interface();
+                    frame.setVisible(true);
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Could not run PaintBot Applet");
+        }
     }
     
 }
