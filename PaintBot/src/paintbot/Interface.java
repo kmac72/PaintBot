@@ -8,7 +8,8 @@ package paintbot;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.Vector;
+import java.util.Timer;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -17,15 +18,21 @@ import javax.swing.*;
  */
 public class Interface extends javax.swing.JFrame {
     
-    private Kinematics kin;
-    private Vector<Double> paintdots;
+    private Kinematics kin = new Kinematics();
+    private final Vector<Double> paintdots = new Vector();
     
+    Timer timer = new Timer();
+    TimerTask a1_pos_task;
+    TimerTask a1_neg_task;
+    TimerTask a2_pos_task;
+    TimerTask a2_neg_task;
+    TimerTask a3_pos_task;
+    TimerTask a3_neg_task;
+
     /**
      * Creates new form Interface
      */
-    public Interface() {
-        this.paintdots = new Vector();
-        this.kin = new Kinematics();
+    public Interface() {      
         initComponents();
     }
 
@@ -49,8 +56,11 @@ public class Interface extends javax.swing.JFrame {
         axis3_negative = new javax.swing.JButton();
         axis3_positive = new javax.swing.JButton();
         paint_button = new javax.swing.JButton();
+        cont_paint = new javax.swing.JCheckBox();
+        reset = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("PaintBot - Gig'em Robotics");
 
         RobotFrame = new RobotWorkspace();
         RobotFrame.setBackground(new java.awt.Color(255, 255, 255));
@@ -77,6 +87,14 @@ public class Interface extends javax.swing.JFrame {
         jLabel3.setText("Rotating Axis 2");
 
         axis1_negative.setText("<-");
+        axis1_negative.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                axis1_negativeMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                axis1_negativeMouseReleased(evt);
+            }
+        });
         axis1_negative.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 axis1_negativeActionPerformed(evt);
@@ -84,6 +102,14 @@ public class Interface extends javax.swing.JFrame {
         });
 
         axis1_positive.setText("->");
+        axis1_positive.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                axis1_positiveMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                axis1_positiveMouseReleased(evt);
+            }
+        });
         axis1_positive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 axis1_positiveActionPerformed(evt);
@@ -91,6 +117,14 @@ public class Interface extends javax.swing.JFrame {
         });
 
         axis2_negative.setText("<-");
+        axis2_negative.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                axis2_negativeMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                axis2_negativeMouseReleased(evt);
+            }
+        });
         axis2_negative.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 axis2_negativeActionPerformed(evt);
@@ -98,6 +132,14 @@ public class Interface extends javax.swing.JFrame {
         });
 
         axis2_positive.setText("->");
+        axis2_positive.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                axis2_positiveMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                axis2_positiveMouseReleased(evt);
+            }
+        });
         axis2_positive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 axis2_positiveActionPerformed(evt);
@@ -105,6 +147,14 @@ public class Interface extends javax.swing.JFrame {
         });
 
         axis3_negative.setText("<-");
+        axis3_negative.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                axis3_negativeMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                axis3_negativeMouseReleased(evt);
+            }
+        });
         axis3_negative.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 axis3_negativeActionPerformed(evt);
@@ -112,6 +162,14 @@ public class Interface extends javax.swing.JFrame {
         });
 
         axis3_positive.setText("->");
+        axis3_positive.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                axis3_positiveMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                axis3_positiveMouseReleased(evt);
+            }
+        });
         axis3_positive.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 axis3_positiveActionPerformed(evt);
@@ -126,6 +184,16 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
+        cont_paint.setText("Continuous Paint");
+        cont_paint.setActionCommand("Continuous Paint");
+
+        reset.setText("Reset");
+        reset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -136,37 +204,43 @@ public class Interface extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(axis1_negative, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(axis1_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(axis1_negative, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(axis1_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(axis2_negative, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(axis2_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(axis3_negative, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(42, 42, 42)
+                                .addComponent(axis3_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(paint_button, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(axis2_negative, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(axis2_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cont_paint)
+                        .addGap(72, 72, 72))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(axis3_negative, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(axis3_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(paint_button, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44))
+                        .addComponent(reset)
+                        .addGap(96, 96, 96))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(784, 784, 784)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(RobotFrame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(RobotFrame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -187,13 +261,18 @@ public class Interface extends javax.swing.JFrame {
                             .addComponent(axis3_positive, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(54, 54, 54)
                         .addComponent(paint_button, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 297, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(18, 18, 18)
+                        .addComponent(cont_paint)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
+                        .addComponent(reset)
+                        .addGap(96, 96, 96))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Events to move robot arm
+    
     private void axis1_negativeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_axis1_negativeActionPerformed
         kin.axis1_slide(false);
         RobotFrame.repaint();
@@ -223,12 +302,70 @@ public class Interface extends javax.swing.JFrame {
         kin.axis3_rotate(false);
         RobotFrame.repaint();
     }//GEN-LAST:event_axis3_negativeActionPerformed
-
+    
+    //Event to paint dot
     private void paint_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paint_buttonActionPerformed
         paintdots.add(kin.a4_x - 5);
         paintdots.add(kin.a4_y - 5);
         RobotFrame.repaint();
     }//GEN-LAST:event_paint_buttonActionPerformed
+
+    
+    //Events to handle held down mouse
+    private void axis1_negativeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis1_negativeMousePressed
+        timer.scheduleAtFixedRate(a1_neg_task = new axis1_negTimerTask(), 400, 50);
+    }//GEN-LAST:event_axis1_negativeMousePressed
+
+    private void axis1_negativeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis1_negativeMouseReleased
+        a1_neg_task.cancel();
+    }//GEN-LAST:event_axis1_negativeMouseReleased
+
+    private void axis1_positiveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis1_positiveMousePressed
+        timer.scheduleAtFixedRate(a1_pos_task = new axis1_posTimerTask(), 400, 50);
+    }//GEN-LAST:event_axis1_positiveMousePressed
+
+    private void axis1_positiveMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis1_positiveMouseReleased
+        a1_pos_task.cancel();
+    }//GEN-LAST:event_axis1_positiveMouseReleased
+
+    private void axis2_negativeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis2_negativeMousePressed
+        timer.scheduleAtFixedRate(a2_neg_task = new axis2_negTimerTask(), 400, 50);
+    }//GEN-LAST:event_axis2_negativeMousePressed
+
+    private void axis2_negativeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis2_negativeMouseReleased
+        a2_neg_task.cancel();
+    }//GEN-LAST:event_axis2_negativeMouseReleased
+
+    private void axis2_positiveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis2_positiveMousePressed
+        timer.scheduleAtFixedRate(a2_pos_task = new axis2_posTimerTask(), 400, 50);
+    }//GEN-LAST:event_axis2_positiveMousePressed
+
+    private void axis2_positiveMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis2_positiveMouseReleased
+        a2_pos_task.cancel();
+    }//GEN-LAST:event_axis2_positiveMouseReleased
+
+    private void axis3_negativeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis3_negativeMousePressed
+        timer.scheduleAtFixedRate(a3_neg_task = new axis3_negTimerTask(), 400, 50);
+    }//GEN-LAST:event_axis3_negativeMousePressed
+
+    private void axis3_negativeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis3_negativeMouseReleased
+        a3_neg_task.cancel();
+    }//GEN-LAST:event_axis3_negativeMouseReleased
+
+    private void axis3_positiveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis3_positiveMousePressed
+        timer.scheduleAtFixedRate(a3_pos_task = new axis3_posTimerTask(), 400, 50);
+    }//GEN-LAST:event_axis3_positiveMousePressed
+
+    private void axis3_positiveMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_axis3_positiveMouseReleased
+        a3_pos_task.cancel();
+    }//GEN-LAST:event_axis3_positiveMouseReleased
+    
+    //reset action
+    private void resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetActionPerformed
+        kin = new Kinematics();
+        paintdots.clear();
+        RobotFrame.repaint();
+    }//GEN-LAST:event_resetActionPerformed
 
     /**
      * @param args the command line arguments
@@ -259,6 +396,7 @@ public class Interface extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Interface().setVisible(true);
             }
@@ -288,16 +426,71 @@ public class Interface extends javax.swing.JFrame {
             g2.setPaint(Color.black);
             g2.setStroke(new BasicStroke(5.0f));
             g2.draw(robotarm);
-                    
+               
+            if(cont_paint.isSelected()){
+                paintdots.add(kin.a4_x - 5);
+                paintdots.add(kin.a4_y - 5);
+            }
+            
             //Draw paint dots
             g2.setPaint(Color.red);
             g2.setStroke(new BasicStroke(0f));
-            for(int i = 0; i < paintdots.size()-2; i+=2){
-                System.out.println(paintdots.size());
+            for(int i = 0; i < paintdots.size()-1; i+=2){
                 g2.fill(new Ellipse2D.Double(paintdots.elementAt(i), paintdots.elementAt(i+1), 10, 10));
             }
+            
+            
         }
         
+    }
+    
+    //Classes to handle timers for button hold down repeat action   
+    class axis1_posTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            kin.axis1_slide(true);
+            RobotFrame.repaint();
+        }
+    }
+    
+    class axis1_negTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            kin.axis1_slide(false);
+            RobotFrame.repaint();
+        }
+    }
+    
+    class axis2_posTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            kin.axis2_rotate(true);
+            RobotFrame.repaint();
+        }
+    }
+    
+    class axis2_negTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            kin.axis2_rotate(false);
+            RobotFrame.repaint();
+        }
+    }
+    
+    class axis3_posTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            kin.axis3_rotate(true);
+            RobotFrame.repaint();
+        }
+    }
+    
+    class axis3_negTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            kin.axis3_rotate(false);
+            RobotFrame.repaint();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -308,9 +501,11 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JButton axis2_positive;
     private javax.swing.JButton axis3_negative;
     private javax.swing.JButton axis3_positive;
+    private javax.swing.JCheckBox cont_paint;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JButton paint_button;
+    private javax.swing.JButton reset;
     // End of variables declaration//GEN-END:variables
 }
