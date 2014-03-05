@@ -13,6 +13,7 @@ import java.awt.geom.*;
 import java.util.Timer;
 import java.util.*;
 import javax.swing.*;
+import java.lang.Math;
 
 /**
  *
@@ -20,11 +21,11 @@ import javax.swing.*;
  */
 public class Interface extends javax.swing.JFrame{
     
-    private Kinematics kin = new Kinematics();
-    private final Vector<Double> paintdots = new Vector();
-    private final Vector<Color> color = new Vector();
+    private Kinematics kin;
+    private final Vector<Double> paintdots;
+    private final Vector<Color> color;
     
-    Timer timer = new Timer();
+    Timer timer;
     TimerTask a1_pos_task;
     TimerTask a1_neg_task;
     TimerTask a2_pos_task;
@@ -41,7 +42,11 @@ public class Interface extends javax.swing.JFrame{
     /**
      * Creates new form Interface
      */
-    public Interface() {      
+    public Interface() { 
+        kin = new Kinematics();
+        paintdots = new Vector();
+        color = new Vector();
+        timer = new Timer();
         initComponents();
     }
 
@@ -565,9 +570,7 @@ public class Interface extends javax.swing.JFrame{
         kin.head_move(kin.a4_x + 1, kin.a4_y);
         RobotFrame.repaint();
     }//GEN-LAST:event_head_rightActionPerformed
-    
-    
-    
+       
     /**
      * @param args the command line arguments
      */

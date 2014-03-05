@@ -124,10 +124,10 @@ public class Kinematics {
      */
     public void head_move(double x, double y){
         
-        //This section is for testing only, remove when actual functionality is added
-        a4_x = x;
-        a4_y = y;
-        //
+        //always keep a4 75 away from a3
+        a4_x = a3_x + (((x - a3_x) / Math.sqrt(Math.pow(x - a3_x, 2) + Math.pow(y - a3_y, 2))) * 75);
+        a4_y = a3_y + (((y - a3_y) / Math.sqrt(Math.pow(x - a3_x, 2) + Math.pow(y - a3_y, 2))) * 75);
+
     }
     
 }
