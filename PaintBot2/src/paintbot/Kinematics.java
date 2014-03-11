@@ -127,7 +127,18 @@ public class Kinematics {
         //always keep a4 75 away from a3
         a4_x = a3_x + (((x - a3_x) / Math.sqrt(Math.pow(x - a3_x, 2) + Math.pow(y - a3_y, 2))) * 75);
         a4_y = a3_y + (((y - a3_y) / Math.sqrt(Math.pow(x - a3_x, 2) + Math.pow(y - a3_y, 2))) * 75);
-
+        
+        //Once inverse kinematics are done, this section of code can be filled
+        //out to add functionality of the world control buttons.
+        /*d1 =
+        a2_th =
+        a3_th = 
+        
+        a1_x = base_x + d1;
+        a2_x = 
+        a2_y = 
+        a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
+        a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;*/
     }
     
 }
