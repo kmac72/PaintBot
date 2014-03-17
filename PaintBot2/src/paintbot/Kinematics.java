@@ -135,10 +135,11 @@ public class Kinematics {
         a3_th = 
         
         a1_x = base_x + d1;
-        a2_x = 
-        a2_y = 
+        a2_x = a1_x;
         a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
-        a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;*/
+        a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;
+		a4_x = x;
+		a4_y = y;*/
     }
     
 }
