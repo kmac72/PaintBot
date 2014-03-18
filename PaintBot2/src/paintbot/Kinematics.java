@@ -131,11 +131,10 @@ public class Kinematics {
         if((dist >= 175) && (a1_x >= base_x && a1_x <= base_x+300))
             d1 = d1 + (x-a4_x);
         
-            if(d1 >= 300)
-                d1 = 300;
-            else if(d1 <= 0)
-                d1 = 0;
-                
+        if(d1 >= 300)
+            d1 = 300;
+        else if(d1 <= 0)
+            d1 = 0;               
         else if(dist >= 175) {
          
             if(x <= base_x+300 && x >= base_x) {
@@ -149,6 +148,13 @@ public class Kinematics {
             else
                 return;
         }
+           
+        System.out.println(dist);
+            
+        if((dist >= 175)&&(a4_x > a1_x)&&((y > a4_y)||(y < a4_y)))
+            d1 = d1 + 1;
+        else if((dist >= 175)&&(a4_x < a1_x)&&((y > a4_y)||(y < a4_y)))
+            d1 = d1 - 1;
         
         double b1 = Math.sqrt(Math.pow(x-(d1+base_x), 2)+Math.pow(y-(base_y-150),2));
         double b2 = Math.sqrt(Math.pow(x-(d1+base_x), 2)+Math.pow((base_y-y), 2));
