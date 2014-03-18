@@ -128,29 +128,58 @@ public class Kinematics {
         
         double dist = Math.sqrt(Math.pow(x-a2_x,2)+Math.pow(y-a2_y,2));
         
-        if(dist > 175 && a1_x + base_x <= base_x + 300)
+        if((dist >= 175) && (a1_x >= base_x && a1_x <= base_x+300))
             d1 = d1 + (x-a4_x);
+        else if(dist >= 175) {
+         
+            if(x <= base_x+300 && x >= base_x) {
+                d1 = d1 + (x-a4_x);
+            }
+            else
+                return;
+        }
  
         System.out.println("dist: " + dist);
         
         double b1 = Math.sqrt(Math.pow(x-(d1+base_x), 2)+Math.pow(y-(base_y-150),2));
         double b2 = Math.sqrt(Math.pow(x-(d1+base_x), 2)+Math.pow((base_y-y), 2));
        
+        if(Double.isNaN(b1) || Double.isNaN(b2))
+            return;
+        
         double p1 = Math.acos((Math.pow(100, 2)+Math.pow(b1, 2)-(75*75))/(2*100*b1))*(180/Math.PI);
         double p2 = Math.acos(((150*150)+(b1*b1)-(b2*b2))/(2*150*b1))*(180/Math.PI);
+        
+        if(Double.isNaN(p1) || Double.isNaN(p2))
+            return;
         
         System.out.println("b1: " + b1 + " b2: " + b2);
         System.out.println("p1: " + p1 + " p2: " + p2);
         
-        if((a4_x > a1_x) && (a3_x > a1_x))
+        if(((a4_x > a1_x) && (a3_x > a1_x)) || ((a4_x > a1_x) && (a3_x < a1_x)))
             a3_th = (Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)-180;  
-        else if((a4_x < a1_x) && (a3_x < a1_x))
+        else if(((a4_x < a1_x) && (a3_x < a1_x)) || ((a4_x < a1_x) && (a3_x > a1_x)))
             a3_th = 180-(Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI); 
         
         if((a4_x > a1_x) && (a3_x > a1_x)) 
             a2_th = -180 + p1 + p2;
         else if((a4_x < a1_x) && (a3_x < a1_x))
             a2_th = 180-p1-p2;
+        
+        if((a4_x < a1_x) && (a3_x > a1_x))      
+            a2_th = -p1+180-p2;
+        else if((a4_x > a1_x) && (a3_x < a1_x))
+            a2_th = p1-180+p2;
+        
+        System.out.println("x: " + x + " a1_x: " + a1_x);
+        if((x>a4_x)&&(Math.ceil(x) == a1_x)) {
+            a2_th = -a2_th;
+            a3_th = (Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)-180;
+        } else if((x<a4_x)&&(Math.floor(x) == a1_x)) {
+            a2_th = -a2_th;
+            a3_th = -(Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)+180;
+        }
+            
         
         System.out.println("a2_th: " + a2_th + " a3_th: " + a3_th);
         
