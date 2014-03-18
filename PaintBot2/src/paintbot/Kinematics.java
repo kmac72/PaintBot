@@ -130,16 +130,25 @@ public class Kinematics {
         
         if((dist >= 175) && (a1_x >= base_x && a1_x <= base_x+300))
             d1 = d1 + (x-a4_x);
+        
+            if(d1 >= 300)
+                d1 = 300;
+            else if(d1 <= 0)
+                d1 = 0;
+                
         else if(dist >= 175) {
          
             if(x <= base_x+300 && x >= base_x) {
                 d1 = d1 + (x-a4_x);
+                
+                if(d1 >= 300)
+                    d1 = 300;
+                else if(d1 <= 0)
+                    d1 = 0;
             }
             else
                 return;
         }
- 
-        System.out.println("dist: " + dist);
         
         double b1 = Math.sqrt(Math.pow(x-(d1+base_x), 2)+Math.pow(y-(base_y-150),2));
         double b2 = Math.sqrt(Math.pow(x-(d1+base_x), 2)+Math.pow((base_y-y), 2));
@@ -152,9 +161,6 @@ public class Kinematics {
         
         if(Double.isNaN(p1) || Double.isNaN(p2))
             return;
-        
-        System.out.println("b1: " + b1 + " b2: " + b2);
-        System.out.println("p1: " + p1 + " p2: " + p2);
         
         if(((a4_x > a1_x) && (a3_x > a1_x)) || ((a4_x > a1_x) && (a3_x < a1_x)))
             a3_th = (Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)-180;  
@@ -171,23 +177,19 @@ public class Kinematics {
         else if((a4_x > a1_x) && (a3_x < a1_x))
             a2_th = p1-180+p2;
         
-        System.out.println("x: " + x + " a1_x: " + a1_x);
-        if((x>a4_x)&&(Math.ceil(x) == a1_x)) {
+        if((x>a4_x)&&(Math.floor(x) == a1_x)) {
             a2_th = -a2_th;
             a3_th = (Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)-180;
-        } else if((x<a4_x)&&(Math.floor(x) == a1_x)) {
+        } else if((x<a4_x)&&(Math.ceil(x) == a1_x)) {
             a2_th = -a2_th;
             a3_th = -(Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)+180;
         }
-            
-        
-        System.out.println("a2_th: " + a2_th + " a3_th: " + a3_th);
-        
+                   
         a1_x = base_x + d1;
         a2_x = a1_x;
         a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
         a3_x = -100 * Math.sin(a2_th * (Math.PI/180)) + d1 + base_x;
-       a4_y = -75 * (Math.cos(a2_th * (Math.PI/180)) * Math.cos(a3_th * (Math.PI/180)) 
+        a4_y = -75 * (Math.cos(a2_th * (Math.PI/180)) * Math.cos(a3_th * (Math.PI/180)) 
                 - Math.sin(a2_th * (Math.PI/180)) * Math.sin(a3_th * (Math.PI/180)))
                 - 100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;
         
