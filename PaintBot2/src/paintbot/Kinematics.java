@@ -134,7 +134,9 @@ public class Kinematics {
         if(d1 >= 300)
             d1 = 300;
         else if(d1 <= 0)
-            d1 = 0;               
+            d1 = 0;
+        
+        
         else if(dist >= 175) {
          
             if(x <= base_x+300 && x >= base_x) {
@@ -148,8 +150,6 @@ public class Kinematics {
             else
                 return;
         }
-           
-        System.out.println(dist);
             
         if((dist >= 175)&&(a4_x > a1_x)&&((y > a4_y)||(y < a4_y)))
             d1 = d1 + 1;
@@ -182,11 +182,11 @@ public class Kinematics {
             a2_th = -p1+180-p2;
         else if((a4_x > a1_x) && (a3_x < a1_x))
             a2_th = p1-180+p2;
-        
-        if((x>a4_x)&&(Math.floor(x) == a1_x)) {
+
+        if((x>a4_x)&&((Math.ceil(x) == a1_x) || (Math.floor(x) == a1_x))) {
             a2_th = -a2_th;
             a3_th = (Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)-180;
-        } else if((x<a4_x)&&(Math.ceil(x) == a1_x)) {
+        } else if((x<a4_x)&&((Math.floor(x) == a1_x) || (Math.ceil(x) == a1_x))) {
             a2_th = -a2_th;
             a3_th = -(Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)+180;
         }
