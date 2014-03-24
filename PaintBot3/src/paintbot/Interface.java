@@ -13,7 +13,6 @@ import java.awt.geom.*;
 import java.util.Timer;
 import java.util.*;
 import javax.swing.*;
-import java.lang.Math;
 
 /**
  *
@@ -39,6 +38,8 @@ public class Interface extends javax.swing.JFrame{
     
     Color selectedColor;
     
+    private Network net;
+    
     /**
      * Creates new form Interface
      */
@@ -47,7 +48,9 @@ public class Interface extends javax.swing.JFrame{
         paintdots = new Vector();
         color = new Vector();
         timer = new Timer();
+        net = new Network(true,null);
         initComponents();
+      
     }
 
     /**
@@ -94,7 +97,7 @@ public class Interface extends javax.swing.JFrame{
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("PaintBot - Gig'em Robotics");
+        setTitle("PaintBot Master- Gig'em Robotics");
 
         RobotFrame = new RobotWorkspace();
         RobotFrame.setBackground(new java.awt.Color(255, 255, 255));
@@ -602,7 +605,20 @@ public class Interface extends javax.swing.JFrame{
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Interface().setVisible(true);
+   
+                //ask user for master or slave
+                Object[] options = {"Master","Slave"};
+                int n = JOptionPane.showOptionDialog(null, "Welcome to PaintBot. Would you like to run PaintBot as a master or slave?","PaintBot - Master or Slave",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,options[0]);
+
+                //run appoprtiate window based on choice
+                if(n == 1){
+                    String ip = (String)JOptionPane.showInputDialog(null,"Please enter the IP of the master you wish to connect to.","IP of Master",JOptionPane.PLAIN_MESSAGE,null,null,"127.0.0.1");
+                    Network slave = new Network(false,ip);
+                }
+                else{
+                    new Interface().setVisible(true);
+                }
+  
             }
         });
     }
@@ -649,6 +665,8 @@ public class Interface extends javax.swing.JFrame{
                 g2.fill(new Ellipse2D.Double(paintdots.elementAt(i), paintdots.elementAt(i+1), 10, 10));
             }
             
+            //Send new drawing to network
+            net.MasterUpdate(xpoints, ypoints, paintdots, color);
         }
 
         @Override
