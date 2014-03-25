@@ -102,6 +102,7 @@ public class Slave extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     
     public void Update(double[] x, double[] y, Vector<Double> paint, Vector<Color> c){
+        System.out.println("Repainting: " + x[0]);
         xpoints = x;
         ypoints = y;
         paintdots = paint;

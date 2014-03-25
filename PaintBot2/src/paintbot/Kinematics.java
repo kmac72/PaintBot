@@ -131,10 +131,10 @@ public class Kinematics {
         if((dist >= 175) && (a1_x >= base_x && a1_x <= base_x+300))
             d1 = d1 + (x-a4_x);
         
-        if(d1 >= 300)
+        /*if(d1 >= 300)
             d1 = 300;
         else if(d1 <= 0)
-            d1 = 0;
+            d1 = 0;*/
         
         
         else if(dist >= 175) {
@@ -142,10 +142,10 @@ public class Kinematics {
             if(x <= base_x+300 && x >= base_x) {
                 d1 = d1 + (x-a4_x);
                 
-                if(d1 >= 300)
+                /*if(d1 >= 300)
                     d1 = 300;
                 else if(d1 <= 0)
-                    d1 = 0;
+                    d1 = 0;*/
             }
             else
                 return;
