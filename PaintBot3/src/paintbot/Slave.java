@@ -106,6 +106,17 @@ public class Slave extends javax.swing.JFrame {
         ypoints = y;
         paintdots = paint;
         color = c;
+        if(delayBox.isSelected())
+        {
+            try
+            {
+                Thread.sleep(2000);
+            }
+            catch(InterruptedException ex)
+            {
+                Thread.currentThread().interrupt();
+            }
+        }
         RobotFrame.repaint();
     }
     
