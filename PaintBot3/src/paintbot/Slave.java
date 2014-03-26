@@ -134,7 +134,8 @@ public class Slave extends javax.swing.JFrame {
             //Draw paint dots
             g2.setStroke(new BasicStroke(0f));
             for(int i = 0, j = 0; i < paintdots.size()-1; i+=2, j++){
-                g2.setColor(color.elementAt(j));
+                //g2.setColor(color.elementAt(j));
+                g2.setColor(Color.black);
                 g2.fill(new Ellipse2D.Double(paintdots.elementAt(i), paintdots.elementAt(i+1), 10, 10));
             }
         }
