@@ -10,6 +10,9 @@ import java.awt.Color;
 import java.util.Vector;
 import java.net.*;
 import java.io.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.swing.JOptionPane;
 /**
  *
  * @author Brian
@@ -19,15 +22,10 @@ public class Network {
     boolean master;
     String ip;   
     Slave slave;
-    public ServerSocket serverSocket = null;
-    public Socket clientSocket = null;
-    public Socket pbSocket = null;
+    ExecutorService clientProcessingPool;
+    String sendLine;
     public int PORT_NUM = 4444;
-    public PrintWriter out;
-    public BufferedReader in;
-    
-    
-    
+      
     /**
      * 
      * @param m - if instance should be master or slave
@@ -36,45 +34,101 @@ public class Network {
     public Network(boolean m, String i){
         master = m;
         ip = i;
-
-        //If Slave, run Slave interface
-        if(!m){
-            slave = new Slave();
-            slave.setVisible(true);
-            System.out.println("initializing slave interface");
-        }
         
-        //Setup sockets based on master or slave
-        try {         
-            if(m){
-                
-                System.out.println("Creating Server");
-                //initialize server side
-                serverSocket = new ServerSocket(PORT_NUM);
-                clientSocket = serverSocket.accept();
-                out = new PrintWriter(clientSocket.getOutputStream(), true);
-		in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                out.println("initialize");
-                
-            } else if(!m) {
-                
-                System.out.println("creating client");
-                //initialize client side
-                String inputline;
-                pbSocket = new Socket(ip, PORT_NUM);
-		in = new BufferedReader(new InputStreamReader(pbSocket.getInputStream()));
-                
-                //send input string to decode
-                while((inputline = in.readLine()) != null) {
-                    System.out.println(inputline);
-                    UpdateSlave(inputline);
+        if(m)
+            StartServer();
+        else
+            StartSlave();
+    }
+    
+    /**
+     * Create threads for client connections
+     */
+    public void StartServer(){
+        clientProcessingPool = Executors.newFixedThreadPool(10);
+        
+        Runnable serverTask = new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    ServerSocket serverSocket = new ServerSocket(PORT_NUM);
+                    
+                    while(true){
+                        Socket clientSocket = serverSocket.accept();
+                        clientProcessingPool.submit(new ClientTask(clientSocket));
+                    }
+                }
+                catch (IOException e){
+                    System.err.println("Unable to process client request");
                 }
             }
+        
+        };
+        Thread serverThread = new Thread(serverTask);
+        serverThread.start();
+    }
+    
+    /**
+     * Start slave socket and interface
+     */
+    public void StartSlave(){
+        
+        slave = new Slave();
+        slave.setVisible(true);
+        
+        Runnable slaveTask = new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    //initialize client side
+                    String inputline;
+                    Socket pbSocket = new Socket(ip, PORT_NUM);
+                    BufferedReader in = new BufferedReader(new InputStreamReader(pbSocket.getInputStream()));
 
-        } catch (IOException e) {
-            System.out.println("Accept failed on port: " + PORT_NUM);
-            System.exit(-1);
-        }	
+
+                    //send input string to decode
+                    while((inputline = in.readLine()) != null) {
+                        System.out.println(inputline);
+                        UpdateSlave(inputline);
+                    }
+                }
+                catch (IOException e) {
+                    System.out.println("Accept failed on port: " + PORT_NUM);
+                    JOptionPane.showMessageDialog(null,"Cannot connect to Master. Closing program.");
+                    System.exit(-1);
+                }
+            }
+        };
+        
+        Thread slaveThread = new Thread(slaveTask);
+        slaveThread.start();
+    }
+    /**
+     * Handle sending data to clients
+     */
+    private class ClientTask implements Runnable{
+        private final Socket clientSocket;
+        
+        private ClientTask(Socket clientSocket){
+            this.clientSocket = clientSocket;
+        }
+        
+        @Override
+        public void run(){
+            System.out.println("Got a connection");
+            try{
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                String oldline = sendLine;
+                while(true){
+                    if(oldline != sendLine)
+                        out.println(sendLine);
+                        oldline = sendLine;
+                }
+            }
+            catch(IOException e){
+                System.out.println("Connection Terminated");
+            }
+        }
     }
     
     /**
@@ -97,8 +151,7 @@ public class Network {
         for(int i=0; i<paintdots.size(); ++i) {
             outline = outline + (String.valueOf(paintdots.get(i)) + "$");
         }
-        System.out.println("Sending: " + outline);
-        out.println(outline);          
+        sendLine = outline;
     }
     
     /**

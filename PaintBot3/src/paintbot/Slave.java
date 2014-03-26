@@ -102,7 +102,6 @@ public class Slave extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     
     public void Update(double[] x, double[] y, Vector<Double> paint, Vector<Color> c){
-        System.out.println("Repainting: " + x[0]);
         xpoints = x;
         ypoints = y;
         paintdots = paint;
@@ -114,6 +113,7 @@ public class Slave extends javax.swing.JFrame {
     
         public RobotWorkspace(){}
         
+        @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D)g;
