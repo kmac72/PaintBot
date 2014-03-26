@@ -171,7 +171,6 @@ public class Network {
         Vector<Color> color = new Vector();
         
         if(inputline.equals("")) {
-            System.out.println("EMPTY INPUT");
             return;
         }
         

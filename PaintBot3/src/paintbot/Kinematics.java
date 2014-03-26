@@ -131,21 +131,11 @@ public class Kinematics {
         if((dist >= 175) && (a1_x >= base_x && a1_x <= base_x+300))
             d1 = d1 + (x-a4_x);
         
-        if(d1 >= 300)
-            d1 = 300;
-        else if(d1 <= 0)
-            d1 = 0;
-        
-        
         else if(dist >= 175) {
          
             if(x <= base_x+300 && x >= base_x) {
                 d1 = d1 + (x-a4_x);
-                
-                if(d1 >= 300)
-                    d1 = 300;
-                else if(d1 <= 0)
-                    d1 = 0;
+
             }
             else
                 return;
@@ -182,7 +172,8 @@ public class Kinematics {
             a2_th = -p1+180-p2;
         else if((a4_x > a1_x) && (a3_x < a1_x))
             a2_th = p1-180+p2;
-
+        
+        //mirrors the angle when moving across the axis of robot
         if((x>a4_x)&&((Math.ceil(x) == a1_x) || (Math.floor(x) == a1_x))) {
             a2_th = -a2_th;
             a3_th = (Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)-180;
@@ -190,7 +181,7 @@ public class Kinematics {
             a2_th = -a2_th;
             a3_th = -(Math.acos(((100*100)+(75*75)-Math.pow(b1,2))/(2*75*100)))*(180/Math.PI)+180;
         }
-                   
+        
         a1_x = base_x + d1;
         a2_x = a1_x;
         a3_y = -100 * Math.cos(a2_th * (Math.PI/180)) - 150 + base_y;

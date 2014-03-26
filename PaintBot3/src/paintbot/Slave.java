@@ -13,6 +13,8 @@ import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import javax.swing.JPanel;
 
@@ -26,6 +28,10 @@ public class Slave extends javax.swing.JFrame {
     double ypoints[] = {500, 350, 350, 425};
     Vector<Double> paintdots;
     Vector<Color> color;
+    Vector<double[]> xstream = new Vector<double[]>();
+    Vector<double[]> ystream = new Vector<double[]>();;
+    Vector<Vector<Double>> paintstream = new Vector<Vector<Double>>();;
+    Timer timer = new Timer();
     
     /**
      * Creates new form Slave
@@ -102,22 +108,34 @@ public class Slave extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     
     public void Update(double[] x, double[] y, Vector<Double> paint, Vector<Color> c){
-        xpoints = x;
+        /*xpoints = x;
         ypoints = y;
         paintdots = paint;
-        color = c;
-        if(delayBox.isSelected())
-        {
-            try
-            {
-                Thread.sleep(2000);
-            }
-            catch(InterruptedException ex)
-            {
-                Thread.currentThread().interrupt();
+        color = c;*/
+        
+        xstream.add(x);
+        ystream.add(y);
+        paintstream.add(paint);
+        
+        if(delayBox.isSelected()) { 
+            timer.schedule(new delayTimerTask(), 2000);
+            
+        } else {
+            
+            if(xstream.size() != 0) {
+                
+                xpoints = xstream.firstElement();
+                xstream.removeElementAt(0);
+
+                ypoints = ystream.firstElement();
+                ystream.removeElementAt(0);
+
+                paintdots = paintstream.firstElement();
+                paintstream.removeElementAt(0);
+
+                RobotFrame.repaint();
             }
         }
-        RobotFrame.repaint();
     }
     
     class RobotWorkspace extends JPanel{
@@ -152,6 +170,24 @@ public class Slave extends javax.swing.JFrame {
         }
         
     }
-
+    
+    class delayTimerTask extends TimerTask{
+        @Override
+        public void run(){
+            
+            if(xstream.size() != 0) {
+            xpoints = xstream.firstElement();
+            xstream.removeElementAt(0);
+            
+            ypoints = ystream.firstElement();
+            ystream.removeElementAt(0);
+            
+            paintdots = paintstream.firstElement();
+            paintstream.removeElementAt(0);
+            
+            RobotFrame.repaint();
+            }
+        }
+    }
 
 }
